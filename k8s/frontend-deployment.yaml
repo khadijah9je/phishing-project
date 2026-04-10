@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+
+      initContainers:
+      - name: init-download
+        image: alpine
+        command:
+        - sh
+        - -c
+        - wget -O /data/index.html https://raw.githubusercontent.com/khadijah9je/phishing-project/main/frontend/index.html
+        volumeMounts:
+        - name: frontend-storage
+          mountPath: /data
+
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: frontend-storage
+          mountPath: /usr/share/nginx/html
+
+      volumes:
+      - name: frontend-storage
+        persistentVolumeClaim:
+          claimName: frontend-pvc
