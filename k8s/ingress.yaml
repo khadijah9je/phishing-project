@@ -2,8 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: phishing-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+
 spec:
   ingressClassName: nginx
   rules:
@@ -19,7 +18,7 @@ spec:
               number: 80
 
       - path: /submit
-        pathType: Prefix
+        pathType: Exact
         backend:
           service:
             name: backend-service
